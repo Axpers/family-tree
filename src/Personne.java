@@ -1,21 +1,25 @@
+import java.util.*;
+
 public class Personne {
 
   // Date de mort inconnue
   public Personne(String Nom, String Prenom, String DateNaissance, String Sexe) {
-    nom = Nom;
-    prenom = Prenom;
-    dateNaissance = DateNaissance;
-    sexe = Sexe;
+    this.nom = Nom;
+    this.prenom = Prenom;
+    this.dateNaissance = DateNaissance;
+    this.sexe = Sexe;
   }
 
   // Date de mort connue
   public Personne(String Nom, String Prenom, String DateNaissance, String DateMort, String Sexe) {
-    nom = Nom;
-    prenom = Prenom;
-    dateNaissance = DateNaissance;
-    dateMort = DateMort;
-    sexe = Sexe;
+    this.nom = Nom;
+    this.prenom = Prenom;
+    this.dateNaissance = DateNaissance;
+    this.dateMort = DateMort;
+    this.sexe = Sexe;
   }
+
+  public Personne(){}
 
   public String nom;
 
@@ -26,4 +30,8 @@ public class Personne {
   public String dateMort;
 
   public String sexe;
+
+  public Vector<Personne> liste_parente = new Vector<Personne>();
+
+  public Vector<Relation> liste_mariage = new Vector<Relation>();
 }

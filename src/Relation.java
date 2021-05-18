@@ -1,14 +1,14 @@
 public class Relation {
 
-  public Relation(String Type, String Prenom1, String Prenom2) {
+  public Relation(String Type, Personne Personne1, Personne Personne2) {
     type = Type;
-    prenom1 = Prenom1;
-    prenom2 = Prenom2;
+    personne1 = Personne1;
+    personne2 = Personne2;
   }
 
   public String type;
 
-  public String prenom1;
+  public Personne personne1;
 
-  public String prenom2;
+  public Personne personne2;
 }
