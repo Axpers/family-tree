@@ -31,7 +31,7 @@ public class Personne {
 
   public String sexe;
 
-  public Vector<Personne> liste_parente = new Vector<Personne>();
+  public Vector<Relation> liste_parente = new Vector<Relation>();
 
   public Vector<Relation> liste_mariage = new Vector<Relation>();
 }
