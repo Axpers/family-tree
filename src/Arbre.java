@@ -25,8 +25,10 @@ public class Arbre {
       tableauPersonnes.add(instancierPersonne());
       Choix();
 
-      // TAILLE DU TABLEAU
-    } else if (choixUtilisateur == 2) {
+
+    }
+    // TAILLE DU TABLEAU
+    else if (choixUtilisateur == 2) {
 
       Personne toto = new Personne("Toto", "Toto", "Toto", "Toto");
       tableauPersonnes.add(toto);
@@ -34,13 +36,15 @@ public class Arbre {
       System.out.println("Taille du tableau : " + tableauPersonnes.size());
       Choix();
 
-      // QUITTER LE PROGRAMME
-    } else if (choixUtilisateur == 3) {
+    }
+    // QUITTER LE PROGRAMME
+    else if (choixUtilisateur == 3) {
       System.out.println("Vous quittez le programme");
       System.exit(0);
 
-      // MARIAGE
-    } else if (choixUtilisateur == 4) {
+    }
+    // MARIAGE
+    else if (choixUtilisateur == 4) {
       System.out.println("Quel est la première personne ?");
       String personne1 = lecteur.nextLine();
 
@@ -94,11 +98,12 @@ public class Arbre {
   }
 
   private static Personne trouverParPrenom(String prenom) {
-    for (int i = 0; i < tableauPersonnes.size(); i++) {
-      if (tableauPersonnes.get(i).prenom.equals(prenom)) {
-        return tableauPersonnes.get(i);
+    for (Personne tableauPersonne : tableauPersonnes) {
+      if (tableauPersonne.prenom.equals(prenom)) {
+        return tableauPersonne;
       }
     }
+    System.out.println("Cette personne n'existe pas, vous pourrez la créer.");
     return instancierPersonne();
   }
 
