@@ -138,9 +138,9 @@ public class Arbre {
 
   private static Personne trouverParPrenom(String prenom) {
 
-    for (int i = 0; i < tableauPersonnes.size(); i++) {
-      if (tableauPersonnes.get(i).prenom.equals(prenom)) {
-        return tableauPersonnes.get(i);
+    for (Personne tableauPersonne : tableauPersonnes) {
+      if (tableauPersonne.prenom.equals(prenom)) {
+        return tableauPersonne;
       }
     }
     System.out.println(prenom + " n'existe pas, voulez-vous la créer ?");
