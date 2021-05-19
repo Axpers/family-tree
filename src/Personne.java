@@ -19,8 +19,6 @@ public class Personne {
     this.sexe = Sexe;
   }
 
-  public Personne(){}
-
   public String nom;
 
   public String prenom;
@@ -31,7 +29,5 @@ public class Personne {
 
   public String sexe;
 
-  public Vector<Personne> liste_parente = new Vector<Personne>();
-
-  public Vector<Relation> liste_mariage = new Vector<Relation>();
+  public Vector<Relation> liste_relations = new Vector<>();
 }
