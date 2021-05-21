@@ -6,6 +6,14 @@ public class Arbre {
   public static Vector<Personne> tableauPersonnes = new Vector<>();
 
   public static void main(String[] args) {
+    Personne toto = new Personne("toto", "toto", "1 avril", "homme");
+    Personne tata = new Personne("tata", "tata", "1 avril", "femme");
+    Personne titi = new Personne("titi", "titi", "avril", "homme");
+    Personne enfant = new Personne("enfant", "enfant", "avril", "homme");
+    tableauPersonnes.add(toto);
+    tableauPersonnes.add(tata);
+    tableauPersonnes.add(titi);
+    tableauPersonnes.add(enfant);
     Choix();
   }
 
@@ -19,6 +27,8 @@ public class Arbre {
     System.out.println("Choix 4 : Marier deux personnes");
     System.out.println("Choix 5 : Etablir un lien de parenté");
     System.out.println("Choix 6 : Obtenir le père d'une personne");
+    System.out.println("Choix 7 : Obtenir la mère d'une personne");
+    System.out.println("Choix 8 : Obtenir les enfants d'une personne");
     String choixUtilisateur = lecteur.next();
 
     switch (choixUtilisateur) {
@@ -30,7 +40,7 @@ public class Arbre {
 
       // INFORMATION D'UNE PERSONNE
       case "2" -> {
-        System.out.println("Quel est le nom de la personne concerncée ?");
+        System.out.println("Quel est le nom de la personne concernée ?");
         String nomPersonne = lecteur.next().toLowerCase();
         Personne PersonneConcernee = trouverParPrenom(nomPersonne);
         afficherInfoPersonne(PersonneConcernee);
@@ -74,6 +84,25 @@ public class Arbre {
         String nomPersonne = lecteur.next().toLowerCase();
         Personne PersonneConcernee = trouverParPrenom(nomPersonne);
         obtenirMere(PersonneConcernee);
+        Choix();
+      }
+
+      // OBTENIR LES ENFANTS D'UNE PERSONNE
+      case "8" -> {
+        System.out.println("Quel est le nom de la personne concernée ?");
+        String nomPersonne = lecteur.next().toLowerCase();
+        Personne PersonneConcernee = trouverParPrenom(nomPersonne);
+        for (Relation relation : PersonneConcernee.liste_relations) {
+          if(relation.type == Relation.TypeRelation.Parent){
+            if(relation.personne1.sexe.equals("homme")){
+              System.out.println(relation.personne1.prenom + " est le père de : " + relation.personne2.prenom);
+            }
+            else if(relation.personne1.sexe.equals("femme")){
+              System.out.println(relation.personne1.prenom + " est la mère de : " + relation.personne2.prenom);
+            }
+          }
+        }
+
         Choix();
       }
 
@@ -220,14 +249,22 @@ public class Arbre {
 
   private static void afficherRelation(Relation relation) {
     if(relation.type == Relation.TypeRelation.Mariage){
-      System.out.println(relation.personne1.prenom + " est dans une relation de type mariage avec " + relation.personne2.prenom);
+      if(relation.personne1.sexe.equals("homme")){
+        System.out.println(relation.personne1.prenom + " est l'époux de " + relation.personne2.prenom);
+      }
+      else if(relation.personne1.sexe.equals("femme")){
+        System.out.println(relation.personne1.prenom + " est l'épouse de " + relation.personne2.prenom);
+      }
     }
     else if(relation.type == Relation.TypeRelation.Parent){
-      System.out.println(relation.personne1.prenom + " est le parent de " + relation.personne2.prenom);
+      if(relation.personne1.sexe.equals("homme")){
+        System.out.println(relation.personne1.prenom + " est le père de " + relation.personne2.prenom);
+      }
+      else if(relation.personne1.sexe.equals("femme")){
+        System.out.println(relation.personne1.prenom + " est la mère de " + relation.personne2.prenom);
+      }
     }
-    else if(relation.type == Relation.TypeRelation.Enfant){
-      System.out.println(relation.personne1.prenom + " est l'enfant de " + relation.personne2.prenom);
-    }
+
 }
 
   private static Personne obtenirPere(Personne personne1){
@@ -271,4 +308,22 @@ public class Arbre {
     return obtenirMere(instancierPersonne());
 
   }
+/*
+  private static Personne obtenirEnfant(Personne personne1){
+    if(personne1.liste_relations.size() == 0){
+      System.out.println(personne1.prenom + " ne possède pas d'enfant");
+    }
+    else{
+      for (Relation relation : personne1.liste_relations){
+        if(relation.type == Relation.TypeRelation.Parent){
+          return relation.personne2;
+        }
+      }
+    }
+    Choix();
+    return obtenirEnfant(instancierPersonne());
+  }
+
+ */
+
 }

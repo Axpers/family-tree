@@ -30,4 +30,5 @@ public class Personne {
   public String sexe;
 
   public ArrayList<Relation> liste_relations = new ArrayList<>();
+
 }
