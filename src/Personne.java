@@ -29,5 +29,5 @@ public class Personne {
 
   public String sexe;
 
-  public Vector<Relation> liste_relations = new Vector<>();
+  public ArrayList<Relation> liste_relations = new ArrayList<>();
 }
