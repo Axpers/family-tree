@@ -18,6 +18,7 @@ public class Arbre {
     System.out.println("Choix 3 : Sortir du programme");
     System.out.println("Choix 4 : Marier deux personnes");
     System.out.println("Choix 5 : Etablir un lien de parenté");
+    System.out.println("Choix 6 : Obtenir le père d'une personne");
     String choixUtilisateur = lecteur.next();
 
     switch (choixUtilisateur) {
@@ -31,8 +32,8 @@ public class Arbre {
       case "2" -> {
         System.out.println("Quel est le nom de la personne concerncée ?");
         String nomPersonne = lecteur.next().toLowerCase();
-        Personne PersonneAChercher = trouverParPrenom(nomPersonne);
-        afficherInfoPersonne(PersonneAChercher);
+        Personne PersonneConcernee = trouverParPrenom(nomPersonne);
+        afficherInfoPersonne(PersonneConcernee);
         Choix();
       }
 
@@ -41,7 +42,6 @@ public class Arbre {
         System.out.println("Vous quittez le programme");
         System.exit(0);
       }
-
 
       // MARIAGE
       case "4" -> {
@@ -59,7 +59,25 @@ public class Arbre {
         Choix();
       }
 
-      //CHOIX PAR DEFAUT
+      // OBTENIR LE PERE D'UNE PERSONNE
+      case "6" -> {
+        System.out.println("Quel est le nom de la personne concernée ?");
+        String nomPersonne = lecteur.next().toLowerCase();
+        Personne PersonneConcernee = trouverParPrenom(nomPersonne);
+        obtenirPere(PersonneConcernee);
+        Choix();
+      }
+
+      // OBTENIR LA MERE D'UNE PERSONNE
+      case "7" -> {
+        System.out.println("Quel est le nom de la personne concernée ?");
+        String nomPersonne = lecteur.next().toLowerCase();
+        Personne PersonneConcernee = trouverParPrenom(nomPersonne);
+        obtenirMere(PersonneConcernee);
+        Choix();
+      }
+
+      // CHOIX PAR DEFAUT
       default -> {
         System.out.println("Veuillez entrer une chaine de caractère correcte.");
         Choix();
@@ -86,9 +104,32 @@ public class Arbre {
       String DateNaissance = lecteur.next();
 
       // SEXE
-      System.out.println("Quel est son sexe ?");
+      System.out.println("Quel est son sexe ? Hommme ou Femme");
       String Sexe = lecteur.next().toLowerCase();
-      return new Personne(Nom, Prenom, DateNaissance, Sexe);
+      if(!Sexe.equals("homme") && (!Sexe.equals("femme"))){
+        System.out.println("Veuillez entrer une valeur de sexe correcte.");
+        System.out.println("Retour à la création d'une personne");
+        return instancierPersonne();
+      }
+
+
+      // DATE DE MORT
+      System.out.println("La personne possède-t-elle une date de mort ?");
+      System.out.println("Répondez par oui ou non.");
+      String ReponseDateMort = lecteur.next();
+      if(ReponseDateMort.equals("non")){
+        return new Personne(Prenom, Nom, DateNaissance, Sexe);
+      }
+      else if(ReponseDateMort.equals("oui")){
+        System.out.println("Quel est la date de mort de la personne ?");
+        String DatedeMort = lecteur.next();
+        return new Personne(Prenom, Nom, DateNaissance, DatedeMort, Sexe);
+      }
+      else{
+        System.out.println("Veuillez répondre par oui ou non");
+        System.out.println("Retour à la création d'une personne");
+        return instancierPersonne();
+      }
 
     } else if (ajoutNouvellePersonne.equals("non")) {
       System.out.println("Retour au choix des options");
@@ -156,6 +197,7 @@ public class Arbre {
 
   private static void afficherInfoPersonne(Personne personne1) {
     // AFFICHER LES ATTRIBUTS
+    System.out.println();
     System.out.println("Le nom de la personne est : " + personne1.nom);
     System.out.println("Le prenom de la personne est : " + personne1.prenom);
     System.out.println("Le date de naissance de la personne est : " + personne1.dateNaissance);
@@ -164,10 +206,15 @@ public class Arbre {
     System.out.println();
 
     // AFFICHER LA LISTE DES RELATIONS
-    System.out.println("Les Relations de " + personne1.prenom + " sont :");
-    System.out.println();
-    for (Relation relation : personne1.liste_relations) {
-      afficherRelation(relation);
+    if(personne1.liste_relations.size() == 0){
+      System.out.println("La personne " + personne1.prenom + " n'a aucune relation");
+    }
+    else{
+      System.out.println("Les relations de " + personne1.prenom + " sont :");
+      System.out.println();
+      for (Relation relation : personne1.liste_relations) {
+        afficherRelation(relation);
+      }
     }
   }
 
@@ -182,4 +229,46 @@ public class Arbre {
       System.out.println(relation.personne1.prenom + " est l'enfant de " + relation.personne2.prenom);
     }
 }
+
+  private static Personne obtenirPere(Personne personne1){
+    if(personne1.liste_relations.size() == 0){
+      System.out.println(personne1.prenom + " ne possède pas de père");
+    }
+    else{
+    for (Relation relation : personne1.liste_relations){
+      if(relation.type == Relation.TypeRelation.Enfant){
+        if(relation.personne2.sexe.equals("homme")){
+          return relation.personne2;
+        }
+        else{
+          System.out.println(personne1.prenom + " ne possède pas de père");
+        }
+      }
+    }
+    }
+    Choix();
+    return obtenirPere(instancierPersonne());
+
+  }
+
+  private static Personne obtenirMere(Personne personne1){
+    if(personne1.liste_relations.size() == 0){
+      System.out.println(personne1.prenom + " ne possède pas de mère");
+    }
+    else{
+      for (Relation relation : personne1.liste_relations){
+        if(relation.type == Relation.TypeRelation.Enfant){
+          if(relation.personne2.sexe.equals("femme")){
+            return relation.personne2;
+          }
+          else{
+            System.out.println(personne1.prenom + " ne possède pas de mère");
+          }
+        }
+      }
+    }
+    Choix();
+    return obtenirMere(instancierPersonne());
+
+  }
 }
