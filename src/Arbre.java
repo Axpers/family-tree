@@ -40,7 +40,6 @@ public class Arbre {
     tableauPersonnes.add(pereToto);
     tableauPersonnes.add(filsOncle);
 
-
     Choix();
 
 
@@ -112,8 +111,16 @@ public class Arbre {
         String nomPersonne = lecteur.next().toLowerCase();
         Personne PersonneConcernee = trouverParPrenom(nomPersonne);
         Personne pere = obtenirPere(PersonneConcernee);
-        System.out.println("Le père de " + nomPersonne + " est " + pere.prenom);
+
+        if(pere == null){
+          System.out.println(nomPersonne + " n'a pas de père");
+        }
+        else {
+          System.out.println("Le père de " + nomPersonne + " est " + pere.prenom);
+        }
         Choix();
+
+
       }
 
       // OBTENIR LA MERE D'UNE PERSONNE
@@ -123,7 +130,13 @@ public class Arbre {
         Personne PersonneConcernee = trouverParPrenom(nomPersonne);
         obtenirMere(PersonneConcernee);
         Personne mere = obtenirMere(PersonneConcernee);
-        System.out.println("La mère de " + nomPersonne + " est " + mere.prenom);
+
+        if(mere == null){
+          System.out.println(nomPersonne + " n'a pas de mère");
+        }
+        else {
+          System.out.println("La mère de " + nomPersonne + " est " + mere.prenom);
+        }
         Choix();
       }
 
@@ -200,16 +213,8 @@ public class Arbre {
         System.out.println("Quel est le prénom de la personne concernée ?");
         String nomPersonne = lecteur.next().toLowerCase();
         Personne personneConcernee = trouverParPrenom(nomPersonne);
-        ArrayList<Personne> listeCousins = obtenirCousins(personneConcernee);
-
-        for(Personne cousin : listeCousins){
-          if(cousin.sexe.equals("homme")){
-            System.out.println(cousin.prenom + " est le cousin de " + personneConcernee.prenom);
-          }
-          else {
-            System.out.println(cousin.prenom + " est la cousine de " + personneConcernee.prenom);
-          }
-        }
+        afficherCousins(personneConcernee);
+        Choix();
       }
 
       // AFFICHER LES INFORMATIONS DE TOUTES LES PERSONNES
@@ -359,6 +364,18 @@ public class Arbre {
       for (Relation relation : personne1.liste_relations) {
         afficherRelation(relation);
       }
+      ArrayList<Personne> listeFrere = obtenirFreres(personne1);
+      for(Personne frere : listeFrere){
+        if(frere.sexe.equals("homme")){
+          System.out.println(frere.prenom + " est le frère de " + personne1.prenom);
+        }
+        else {
+          System.out.println(frere.prenom + " est la soeur de " + personne1.prenom);
+        }
+      }
+
+      afficherCousins(personne1);
+
     }
   }
 
@@ -387,17 +404,15 @@ public class Arbre {
       System.out.println(personne1.prenom + " ne possède pas de père");
     }
     else{
-    for (Relation relation : personne1.liste_relations){
-      if(relation.type == Relation.TypeRelation.Enfant){
-        if(relation.personne2.sexe.equals("homme")){
-          return relation.personne2;
+      for (Relation relation : personne1.liste_relations){
+        if(relation.type == Relation.TypeRelation.Enfant && relation.personne1.equals(personne1)){
+          if(relation.personne2.sexe.equals("homme")){
+            return relation.personne2;
+          }
         }
       }
     }
-    }
-    Choix();
-    return obtenirPere(instancierPersonne());
-
+    return null;
   }
 
   private static Personne obtenirMere(Personne personne1){
@@ -406,19 +421,21 @@ public class Arbre {
     }
     else{
       for (Relation relation : personne1.liste_relations){
-        if(relation.type == Relation.TypeRelation.Enfant){
+        if(relation.type == Relation.TypeRelation.Enfant && relation.personne1.equals(personne1)){
           if(relation.personne2.sexe.equals("femme")){
             return relation.personne2;
           }
         }
       }
     }
-    Choix();
-    return obtenirMere(instancierPersonne());
-
+    return null;
   }
 
   private static ArrayList<Personne> obtenirEnfants(Personne personne1){
+    if(personne1 == null){
+      return new ArrayList<>();
+    }
+
     if(personne1.liste_relations.size() == 0){
       System.out.println(personne1.prenom + " ne possède pas d'enfant");
       return new ArrayList<>();
@@ -426,7 +443,8 @@ public class Arbre {
     else{
       ArrayList<Personne> listeEnfant = new ArrayList<>();
       for (Relation relation : personne1.liste_relations){
-        if(relation.type == Relation.TypeRelation.Parent){
+        if(relation.type == Relation.TypeRelation.Parent && relation.personne1.equals(personne1)){
+
           listeEnfant.add(relation.personne2);
         }
       }
@@ -435,6 +453,10 @@ public class Arbre {
   }
 
   private static ArrayList<Personne> obtenirFreres(Personne personne1){
+    if(personne1 == null){
+      return new ArrayList<>();
+    }
+
     if(personne1.liste_relations.size() == 0){
       System.out.println(personne1.prenom + " n'a pas de frère");
       return new ArrayList<>();
@@ -444,7 +466,6 @@ public class Arbre {
       ArrayList <Personne> listeEnfant = obtenirEnfants(pere);
       listeEnfant.remove(personne1);
       return listeEnfant;
-
     }
 
   }
@@ -474,16 +495,32 @@ public class Arbre {
     }
     else {
       ArrayList<Personne> listeCousins = new ArrayList<>();
+      ArrayList<Personne> listeFreresDesParents = new ArrayList<>();
 
       ArrayList<Personne> listeParents = obtenirParents(personne1);
       for (Personne parent : listeParents){
-        ArrayList<Personne> listeFreresDuParent = obtenirFreres(parent);
-        for(Personne frereDuParent : listeFreresDuParent){
-          ArrayList<Personne> listeEnfantsDuFrereDuParent = obtenirEnfants(frereDuParent);
-          listeCousins.addAll(listeEnfantsDuFrereDuParent);
-        }
+        ArrayList<Personne> freresDuParent = obtenirFreres(parent);
+        freresDuParent.remove(parent);
+        listeFreresDesParents.addAll(freresDuParent);
+      }
+
+      for(Personne frereDuParent : listeFreresDesParents){
+        ArrayList<Personne> listeEnfantsDuFrereDuParent = obtenirEnfants(frereDuParent);
+        listeCousins.addAll(listeEnfantsDuFrereDuParent);
       }
       return listeCousins;
+    }
+  }
+
+  private static void afficherCousins(Personne personne){
+    ArrayList<Personne> listeCousins = obtenirCousins(personne);
+    for(Personne cousin : listeCousins){
+      if(cousin.sexe.equals("homme")){
+        System.out.println(cousin.prenom + " est le cousin de " + personne.prenom);
+      }
+      else {
+        System.out.println(cousin.prenom + " est la cousine de " + personne.prenom);
+      }
     }
   }
 
