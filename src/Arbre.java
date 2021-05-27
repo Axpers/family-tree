@@ -10,9 +10,9 @@ public class Arbre {
     Personne tata = new Personne("tata", "tata", "tata", "femme");
     Personne enfant = new Personne("enfant", "enfant", "enfant", "homme");
     Personne titi = new Personne("titi", "titi", "titi", "homme");
-    Personne frereToto = new Personne("frereToto", "frereToto", "frereToto", "homme");
-    Personne pereToto = new Personne("pereToto", "pereToto", "pereToto", "homme");
-    Personne filsOncle = new Personne("filsOncle", "filsOncle", "filsOncle", "homme");
+    Personne frereToto = new Personne("freretoto", "freretoto", "freretoto", "homme");
+    Personne pereToto = new Personne("peretoto", "peretoto", "peretoto", "homme");
+    Personne filsOncle = new Personne("filsoncle", "filsoncle", "filsoncle", "homme");
 
     instancierRelation(Relation.TypeRelation.Parent, toto, titi);
     instancierRelation(Relation.TypeRelation.Parent, toto, enfant);
@@ -73,10 +73,8 @@ public class Arbre {
 
       // INFORMATION D'UNE PERSONNE
       case "2" -> {
-        System.out.println("Quel est le nom de la personne concernée ?");
-        String nomPersonne = lecteur.next().toLowerCase();
-        Personne PersonneConcernee = trouverParPrenom(nomPersonne);
-        afficherInfoPersonne(PersonneConcernee);
+        Personne personneConcernee = trouverPersonne();
+        afficherInfoPersonne(personneConcernee);
         System.out.println();
         System.out.println("----------------------------------");
 
@@ -107,16 +105,14 @@ public class Arbre {
 
       // OBTENIR LE PERE D'UNE PERSONNE
       case "6" -> {
-        System.out.println("Quel est le prénom de la personne concernée ?");
-        String nomPersonne = lecteur.next().toLowerCase();
-        Personne PersonneConcernee = trouverParPrenom(nomPersonne);
-        Personne pere = obtenirPere(PersonneConcernee);
+        Personne personneConcernee = trouverPersonne();
+        Personne pere = obtenirPere(personneConcernee);
 
         if(pere == null){
-          System.out.println(nomPersonne + " n'a pas de père");
+          System.out.println(personneConcernee.prenom + " n'a pas de père");
         }
         else {
-          System.out.println("Le père de " + nomPersonne + " est " + pere.prenom);
+          System.out.println("Le père de " + personneConcernee.prenom + " est " + pere.prenom);
         }
         Choix();
 
@@ -125,26 +121,22 @@ public class Arbre {
 
       // OBTENIR LA MERE D'UNE PERSONNE
       case "7" -> {
-        System.out.println("Quel est le prénom de la personne concernée ?");
-        String nomPersonne = lecteur.next().toLowerCase();
-        Personne PersonneConcernee = trouverParPrenom(nomPersonne);
-        obtenirMere(PersonneConcernee);
-        Personne mere = obtenirMere(PersonneConcernee);
+        Personne personneConcernee = trouverPersonne();
+        obtenirMere(personneConcernee);
+        Personne mere = obtenirMere(personneConcernee);
 
         if(mere == null){
-          System.out.println(nomPersonne + " n'a pas de mère");
+          System.out.println(personneConcernee.prenom + " n'a pas de mère");
         }
         else {
-          System.out.println("La mère de " + nomPersonne + " est " + mere.prenom);
+          System.out.println("La mère de " + personneConcernee.prenom + " est " + mere.prenom);
         }
         Choix();
       }
 
       // OBTENIR LES ENFANTS D'UNE PERSONNE
       case "8" -> {
-        System.out.println("Quel est le prénom de la personne concernée ?");
-        String nomPersonne = lecteur.next().toLowerCase();
-        Personne personneConcernee = trouverParPrenom(nomPersonne);
+        Personne personneConcernee = trouverPersonne();
         ArrayList<Personne> listeEnfants = obtenirEnfants(personneConcernee);
 
         for(Personne enfant : listeEnfants){
@@ -163,9 +155,7 @@ public class Arbre {
 
       // OBTENIR LES FRERES D'UNE PERSONNE
       case "9" -> {
-        System.out.println("Quel est le prénom de la personne concernée ?");
-        String nomPersonne = lecteur.next().toLowerCase();
-        Personne personneConcernee = trouverParPrenom(nomPersonne);
+        Personne personneConcernee = trouverPersonne();
         ArrayList<Personne> listeFreres = obtenirFreres(personneConcernee);
 
         for(Personne frere : listeFreres){
@@ -178,16 +168,12 @@ public class Arbre {
           }
           System.out.println(frere.prenom + phrase + personneConcernee.prenom);
         }
-
-
         Choix();
       }
 
       // OBTENIR LES PARENTS D'UNE PERSONNE
       case "10" -> {
-        System.out.println("Quel est le prénom de la personne concernée ?");
-        String nomPersonne = lecteur.next().toLowerCase();
-        Personne personneConcernee = trouverParPrenom(nomPersonne);
+        Personne personneConcernee = trouverPersonne();
         ArrayList<Personne> listeParent = obtenirParents(personneConcernee);
 
         if(listeParent.size() == 0){
@@ -195,7 +181,15 @@ public class Arbre {
         }
 
         else {
+          boolean estOrphelin = false;
+
           for(Personne parent : listeParent){
+            if(parent == null){
+              estOrphelin = true;
+              continue;
+            }
+            estOrphelin = false;
+
             if(parent.sexe.equals("homme")){
               System.out.println(parent.prenom + " est le père de " + personneConcernee.prenom);
             }
@@ -203,6 +197,10 @@ public class Arbre {
               System.out.println(parent.prenom + " est la mère de " + personneConcernee.prenom);
             }
           }
+          if(estOrphelin){
+            System.out.println(personneConcernee.prenom + " n'a pas de parents");
+          }
+
         }
 
         Choix();
@@ -210,9 +208,7 @@ public class Arbre {
 
       // OBTENIR LES COUSINS D'UNE PERSONNE
       case "11" -> {
-        System.out.println("Quel est le prénom de la personne concernée ?");
-        String nomPersonne = lecteur.next().toLowerCase();
-        Personne personneConcernee = trouverParPrenom(nomPersonne);
+        Personne personneConcernee = trouverPersonne();
         afficherCousins(personneConcernee);
         Choix();
       }
@@ -341,7 +337,7 @@ public class Arbre {
 
   private static void instancierRelation(
       Relation.TypeRelation type, Personne personne1, Personne personne2) {
-     new Relation(type, personne1, personne2);
+    new Relation(type, personne1, personne2);
   }
 
   private static void afficherInfoPersonne(Personne personne1) {
@@ -397,7 +393,7 @@ public class Arbre {
       }
     }
 
-}
+  }
 
   private static Personne obtenirPere(Personne personne1){
     if(personne1.liste_relations.size() == 0){
@@ -522,6 +518,12 @@ public class Arbre {
         System.out.println(cousin.prenom + " est la cousine de " + personne.prenom);
       }
     }
+  }
+
+  private static Personne trouverPersonne(){
+    System.out.println("Quel est le nom de la personne concernée ?");
+    String nomPersonne = lecteur.next().toLowerCase();
+    return trouverParPrenom(nomPersonne);
   }
 
 }
